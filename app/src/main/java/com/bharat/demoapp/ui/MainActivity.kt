@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                     binding.progressLoader.visibility = View.GONE
                     if (task.isSuccessful) {
                         Toast.makeText(baseContext, "New User created.", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, UploadActivityActivity::class.java)
+                        val intent = Intent(this, ViewPhotosActivity::class.java)
                         startActivity(intent)
                     } else {
 //                        Toast.makeText(baseContext, "Authentication failed. ${task.exception}", Toast.LENGTH_SHORT).show()

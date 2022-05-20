@@ -11,9 +11,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.bharat.demoapp.R
-import com.bharat.demoapp.ui.adapters.ImageAdapter
 import com.bharat.demoapp.databinding.ActivityViewPhotosBinding
 import com.bharat.demoapp.misc.FirebaseMediaFile
+import com.bharat.demoapp.ui.adapters.ImageAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -58,7 +58,6 @@ class ViewPhotosActivity : AppCompatActivity() {
         listRef.listAll()
             .addOnSuccessListener { listResult ->
                 for (file in listResult.items) {
-                    Log.i("TAG", "onCreate: ${file.name}")
                     file.downloadUrl.addOnSuccessListener { uri ->
                         imagelist!!.add(FirebaseMediaFile(file.name, uri.toString()))
                     }.addOnSuccessListener {
@@ -95,8 +94,9 @@ class ViewPhotosActivity : AppCompatActivity() {
 
     fun downloadAndShare(firebaseMediaFile: FirebaseMediaFile, share: Boolean = false, view: Boolean = false) {
         val imgRef = storageRef!!.child(firebaseMediaFile.name)
+
         val localFile = File.createTempFile(
-            "image",
+            firebaseMediaFile.name,
             ".jpg",
             getExternalFilesDir(Environment.DIRECTORY_PICTURES)
         )

@@ -50,13 +50,13 @@ class UploadActivityActivity : AppCompatActivity(), View.OnClickListener, Upload
         binding.imageViewUpload.setImageResource(R.drawable.ic_upload)
         binding.progressLoader.visibility = View.VISIBLE
         binding.textViewUploadStatus.text = "Uploading now..."
-        uploadPic(filepath)
+        uploadMedia(filepath)
     }
 
-    private fun uploadPic(filepath: String) {
+    private fun uploadMedia(filepath: String) {
         var file = Uri.fromFile(File(filepath))
-        val riversRef = storageReference!!.child("images/${auth.currentUser!!.uid}/${file.lastPathSegment}")
-        val uploadTask = riversRef.putFile(file)
+        val mediaRef = storageReference!!.child("images/${auth.currentUser!!.uid}/${file.lastPathSegment}")
+        val uploadTask = mediaRef.putFile(file)
 
         uploadTask.addOnFailureListener {
             binding.textViewUploadStatus.text = it.message
