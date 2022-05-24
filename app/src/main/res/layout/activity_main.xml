@@ -47,7 +47,7 @@
         android:background="#eeeeee"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="firstname"
+        android:hint="@string/firstname"
         android:inputType="text"
         android:textColor="@android:color/black" />
 
@@ -67,7 +67,7 @@
             android:background="#eeeeee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="lastname"
+            android:hint="@string/lastname"
             android:inputType="text"
             android:textColor="@android:color/black" />
 
@@ -87,7 +87,7 @@
             android:background="#eeeeee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="email"
+            android:hint="@string/email"
             android:inputType="text"
             android:textColor="@android:color/black" />
 
@@ -107,7 +107,7 @@
             android:background="#eeeeee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="password"
+            android:hint="@string/password"
             android:inputType="text"
             android:textColor="@android:color/black" />
 
@@ -115,7 +115,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnRegister"
-        android:text="register"
+        android:text="@string/register"
         android:layout_marginTop="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -129,7 +129,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btnRegister"
         android:layout_marginTop="10dp"
-        android:text="Already have account?"
+        android:text="@string/already_have_account"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

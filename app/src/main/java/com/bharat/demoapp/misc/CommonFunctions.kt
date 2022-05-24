@@ -23,17 +23,17 @@ fun Context.getAllDownloadedFiles(): ArrayList<FirebaseMediaFile> {
     if (path.exists()) {
 
         for (i in path.list()!!) {
-            if(i.endsWith(".mp4")) {
-                val mediaFile = FirebaseMediaFile(i, "$path/$i", "Video")
+            if(i.endsWith(mp4)) {
+                val mediaFile = FirebaseMediaFile(i, "$path/$i", video)
                 files.add(mediaFile)
-            } else if(i.endsWith(".jpg")) {
-                val mediaFile = FirebaseMediaFile(i, "$path/$i", "Image")
+            } else if(i.endsWith(jpg)) {
+                val mediaFile = FirebaseMediaFile(i, "$path/$i", image)
                 files.add(mediaFile)
             }
         }
     }
 
-    Log.i("TAG", "getAllDownloadedFiles: ${files.map { x -> x.name }.joinToString(",")}")
+    //Log.i("TAG", "getAllDownloadedFiles: ${files.map { x -> x.name }.joinToString(",")}")
     return files
 }
 

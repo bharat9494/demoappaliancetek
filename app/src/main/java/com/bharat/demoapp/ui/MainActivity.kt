@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.bharat.demoapp.databinding.ActivityMainBinding
+import com.bharat.demoapp.misc.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -48,31 +49,31 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             val password = binding.etPassword.text.toString().trim()
 
             if(firstname.isEmpty()) {
-                Toast.makeText(this, "Firstname can not be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, firstnameValidation, Toast.LENGTH_SHORT).show()
                 binding.etFirstname.requestFocus()
                 return
             }
 
             if(lastname.isEmpty()) {
-                Toast.makeText(this, "lastname can not be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, lastnameValidation, Toast.LENGTH_SHORT).show()
                 binding.etLastname.requestFocus()
                 return
             }
 
             if(email.isEmpty()) {
-                Toast.makeText(this, "email can not be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, emailValidation, Toast.LENGTH_SHORT).show()
                 binding.etEmail.requestFocus()
                 return
             }
 
             if(password.isEmpty()) {
-                Toast.makeText(this, "password can not be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, passwordValidation, Toast.LENGTH_SHORT).show()
                 binding.etPassword.requestFocus()
                 return
             }
 
             if(password.length < 8) {
-                Toast.makeText(this, "password should be minimum 8 character long!!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, passwordLengthValidation, Toast.LENGTH_SHORT).show()
                 binding.etPassword.requestFocus()
                 return
             }
@@ -82,12 +83,12 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             auth.createUserWithEmailAndPassword(email, password)
                 .addOnFailureListener { error ->
                     binding.progressLoader.visibility = View.GONE
-                    Toast.makeText(baseContext, "Authentication failed. ${error.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, "$signupFailed ${error.message}", Toast.LENGTH_SHORT).show()
                 }
                 .addOnCompleteListener(this) { task ->
                     binding.progressLoader.visibility = View.GONE
                     if (task.isSuccessful) {
-                        Toast.makeText(baseContext, "New User created.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(baseContext, signupSuccess, Toast.LENGTH_SHORT).show()
                         val intent = Intent(this, ViewPhotosActivity::class.java)
                         startActivity(intent)
                     } else {

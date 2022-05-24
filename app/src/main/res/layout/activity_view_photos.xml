@@ -17,7 +17,7 @@
         android:visibility="gone"
         android:textAlignment="center"
         android:textColor="#ff0000"
-        android:text="You are offline"
+        android:text="@string/you_are_offline"
         android:layout_width="0dp"
         android:layout_height="wrap_content"/>
 

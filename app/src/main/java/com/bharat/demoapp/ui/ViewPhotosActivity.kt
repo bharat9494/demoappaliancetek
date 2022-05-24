@@ -11,9 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.FileProvider
 import com.bharat.demoapp.R
 import com.bharat.demoapp.databinding.ActivityViewPhotosBinding
-import com.bharat.demoapp.misc.FirebaseMediaFile
-import com.bharat.demoapp.misc.getAllDownloadedFiles
-import com.bharat.demoapp.misc.isOnline
+import com.bharat.demoapp.misc.*
 import com.bharat.demoapp.ui.adapters.MediaAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -41,7 +39,7 @@ class ViewPhotosActivity : AppCompatActivity(){
         imagelist = ArrayList()
         adapter = MediaAdapter(object : MediaAdapter.OnItemClickListener{
             override fun onDownload(firebaseMediaFile: FirebaseMediaFile) {
-                Toast.makeText(this@ViewPhotosActivity, "Downloading..", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@ViewPhotosActivity, downloading, Toast.LENGTH_SHORT).show()
                 downloadAndShare(firebaseMediaFile)
             }
 
@@ -51,6 +49,13 @@ class ViewPhotosActivity : AppCompatActivity(){
 
             override fun onView(firebaseMediaFile: FirebaseMediaFile) {
                 //not implemented
+            }
+
+            override fun onItemClick(firebaseMediaFile: FirebaseMediaFile) {
+                val intent = Intent(this@ViewPhotosActivity, MediaViewerActivity::class.java)
+                intent.putExtra(url, firebaseMediaFile.url)
+                intent.putExtra(type, firebaseMediaFile.type)
+                startActivity(intent)
             }
         }, this)
         binding.progress.visibility = View.VISIBLE
@@ -66,10 +71,10 @@ class ViewPhotosActivity : AppCompatActivity(){
                     for (file in listResult.items) {
                         file.downloadUrl.addOnSuccessListener { uri ->
 
-                            val type = if(file.name.endsWith(".mp4")) {
-                                "Video"
+                            val type = if(file.name.endsWith(mp4)) {
+                                video
                             } else {
-                                "Image"
+                                image
                             }
 
                             imagelist!!.add(
@@ -126,11 +131,11 @@ class ViewPhotosActivity : AppCompatActivity(){
         val localFile = File(getExternalFilesDir(null)!!.absolutePath, firebaseMediaFile.name)
 
         imgRef.getFile(localFile).addOnSuccessListener {
-            Toast.makeText(this@ViewPhotosActivity, "success", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@ViewPhotosActivity, downloadSuccess, Toast.LENGTH_SHORT).show()
 
             if(share) {
                 val shareIntent = Intent(Intent.ACTION_SEND)
-                shareIntent.type = "image/*"
+                shareIntent.type = imageType
                 shareIntent.putExtra(
                     Intent.EXTRA_STREAM,
                     FileProvider.getUriForFile(

@@ -63,7 +63,7 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnAddVideo"
             android:layout_marginHorizontal="2dp"
-            android:text="video"
+            android:text="@string/video"
             android:textColor="@android:color/white"
             android:layout_weight="1"
             app:backgroundTint="@android:color/holo_green_dark"
@@ -76,7 +76,7 @@
             android:layout_marginHorizontal="2dp"
             app:backgroundTint="@android:color/holo_red_light"
             android:textColor="@android:color/white"
-            android:text="photo"
+            android:text="@string/photo"
             android:textSize="11sp"
             android:layout_weight="1"
             android:layout_width="0dp"

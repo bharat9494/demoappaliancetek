@@ -10,6 +10,7 @@ import android.widget.VideoView
 import androidx.recyclerview.widget.RecyclerView
 import com.bharat.demoapp.R
 import com.bharat.demoapp.misc.FirebaseMediaFile
+import com.bharat.demoapp.misc.image
 import com.bumptech.glide.Glide
 
 
@@ -30,7 +31,7 @@ class MediaAdapter(clickListener: OnItemClickListener, val mContext: Context) : 
 
     override fun getItemViewType(position: Int): Int {
         return when(mMediaList!![position].type) {
-            "Image" -> 1
+            image -> 1
             else -> 2
         }
     }
@@ -65,6 +66,12 @@ class MediaAdapter(clickListener: OnItemClickListener, val mContext: Context) : 
                 videoView?.seekTo(1)
             }
 
+            imageView?.setOnClickListener {
+                onItemClickListener.onItemClick(item!!)
+            }
+            videoView?.setOnClickListener {
+                onItemClickListener.onItemClick(item!!)
+            }
             textviewDownload.setOnClickListener {
                 onItemClickListener.onDownload(item!!)
             }
@@ -93,6 +100,7 @@ class MediaAdapter(clickListener: OnItemClickListener, val mContext: Context) : 
         fun onDownload(firebaseMediaFile: FirebaseMediaFile)
         fun onShare(firebaseMediaFile: FirebaseMediaFile)
         fun onView(firebaseMediaFile: FirebaseMediaFile)
+        fun onItemClick(firebaseMediaFile: FirebaseMediaFile)
     }
 
 }

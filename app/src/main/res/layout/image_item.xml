@@ -35,20 +35,21 @@
 
         <TextView
             android:id="@+id/textviewView"
-            android:text="View"
+            android:text="@string/view"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/textviewShare"
-            android:text="Share"
+            android:text="@string/share"
             android:layout_marginStart="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
         <TextView
             android:id="@+id/textviewDownload"
-            android:text="Download"
+            android:text="@string/download"
             android:layout_marginStart="20dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

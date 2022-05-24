@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import com.bharat.demoapp.databinding.ActivityLoginBinding
+import com.bharat.demoapp.misc.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -32,19 +33,19 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             val password = binding.etPassword.text.toString().trim()
 
             if(email.isEmpty()) {
-                Toast.makeText(this, "email can not be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, emailValidation, Toast.LENGTH_SHORT).show()
                 binding.etEmail.requestFocus()
                 return
             }
 
             if(password.isEmpty()) {
-                Toast.makeText(this, "password can not be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, passwordValidation, Toast.LENGTH_SHORT).show()
                 binding.etPassword.requestFocus()
                 return
             }
 
             if(password.length < 8) {
-                Toast.makeText(this, "password should be minimum 8 character long!!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, passwordLengthValidation, Toast.LENGTH_SHORT).show()
                 binding.etPassword.requestFocus()
                 return
             }
@@ -54,12 +55,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             auth.signInWithEmailAndPassword(email, password)
                 .addOnFailureListener { error ->
                     binding.progressLoader.visibility = View.GONE
-                    Toast.makeText(baseContext, "Authentication failed. ${error.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(baseContext, "$signinFailed ${error.message}", Toast.LENGTH_SHORT).show()
                 }
                 .addOnCompleteListener(this) { task ->
                     binding.progressLoader.visibility = View.GONE
                     if (task.isSuccessful) {
-                        Toast.makeText(baseContext, "Logged in.", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(baseContext, loggedIn, Toast.LENGTH_SHORT).show()
                         val intent = Intent(this, ViewPhotosActivity::class.java)
                         startActivity(intent)
                     } else {

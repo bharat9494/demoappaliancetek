@@ -7,6 +7,9 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.bharat.demoapp.R
 import com.bharat.demoapp.databinding.ActivityUploadActivityBinding
+import com.bharat.demoapp.misc.mp4
+import com.bharat.demoapp.misc.uploadMsg
+import com.bharat.demoapp.misc.uploadSuccess
 import com.bharat.demoapp.ui.fragments.UploadMediaFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -46,10 +49,10 @@ class UploadActivityActivity : AppCompatActivity(), View.OnClickListener, Upload
     }
 
     override fun onSetAttachment(filepath: String, isVideoUri: Boolean) {
-        binding.imageViewUpload.isEnabled = false
-        binding.imageViewUpload.setImageResource(R.drawable.ic_upload)
+        binding.imageViewUpload.visibility = View.GONE
+        binding.animationViewUploading.visibility = View.VISIBLE
         binding.progressLoader.visibility = View.VISIBLE
-        binding.textViewUploadStatus.text = "Uploading now..."
+        binding.textViewUploadStatus.text = uploadMsg
         uploadMedia(filepath, isVideoUri)
     }
 
@@ -61,7 +64,7 @@ class UploadActivityActivity : AppCompatActivity(), View.OnClickListener, Upload
         }
 
         val name = if(isVideoUri) {
-            "${System.currentTimeMillis()}.mp4"
+            "${System.currentTimeMillis()}$mp4"
         } else {
             file.lastPathSegment
         }
@@ -71,9 +74,13 @@ class UploadActivityActivity : AppCompatActivity(), View.OnClickListener, Upload
 
         uploadTask.addOnFailureListener {
             binding.textViewUploadStatus.text = it.message
+            binding.animationViewUploading.visibility = View.GONE
+            binding.imageViewUpload.visibility = View.VISIBLE
             binding.progressLoader.visibility = View.GONE
         }.addOnSuccessListener { taskSnapshot ->
-            binding.textViewUploadStatus.text = "Upload success"
+            binding.textViewUploadStatus.text = uploadSuccess
+            binding.animationViewUploading.visibility = View.GONE
+            binding.imageViewUpload.visibility = View.VISIBLE
             binding.progressLoader.visibility = View.GONE
         }
     }

@@ -34,7 +34,7 @@
             android:background="#eeeeee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="email"
+            android:hint="@string/email"
             android:inputType="text"
             android:textColor="@android:color/black" />
 
@@ -54,7 +54,7 @@
             android:background="#eeeeee"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="password"
+            android:hint="@string/password"
             android:inputType="text"
             android:textColor="@android:color/black" />
 
@@ -62,7 +62,7 @@
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnLogin"
-        android:text="login"
+        android:text="@string/login"
         android:layout_marginTop="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
