@@ -10,6 +10,7 @@ import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.MediaController
 import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.bharat.demoapp.R
@@ -27,6 +28,7 @@ class UploadMediaFragment : BottomSheetDialogFragment() {
 
     private lateinit var binding: FragmentUploadMediaBinding
     var currentMediaPath: String = ""
+    var isVideoUri = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +50,7 @@ class UploadMediaFragment : BottomSheetDialogFragment() {
         }
 
         binding.fabSetAttachment.setOnClickListener {
-            listener.onSetAttachment(currentMediaPath)
+            listener.onSetAttachment(currentMediaPath, isVideoUri)
             dismiss()
         }
 
@@ -60,6 +62,7 @@ class UploadMediaFragment : BottomSheetDialogFragment() {
             galleryAddPic()
             Glide.with(this).load(currentMediaPath).into(binding.imageViewAttachment)
             binding.btnAddPhoto.text = "Click Another"
+            binding.btnAddVideo.visibility = View.GONE
             binding.fabSetAttachment.visibility = View.VISIBLE
             binding.videoView.visibility = View.GONE
             binding.imageViewAttachment.visibility = View.VISIBLE
@@ -67,14 +70,26 @@ class UploadMediaFragment : BottomSheetDialogFragment() {
 
         if (requestCode == REQUEST_VIDEO_CAPTURE && resultCode == Activity.RESULT_OK) {
             val videoUri: Uri = data!!.data!!
-            currentMediaPath = videoUri.path!!
+            currentMediaPath = videoUri.toString()
+            isVideoUri = true
 
             binding.videoView.setVideoURI(videoUri)
-            binding.videoView.visibility = View.VISIBLE
+            binding.framelayout.visibility = View.VISIBLE
             binding.imageViewAttachment.visibility = View.GONE
 
-            binding.btnAddPhoto.text = "Record Another"
+            binding.btnAddVideo.text = "Record Another"
+            binding.btnAddPhoto.visibility = View.GONE
             binding.fabSetAttachment.visibility = View.VISIBLE
+            binding.videoView.seekTo(1)
+
+            binding.btnPlay.setOnClickListener { view ->
+                val mediaController = MediaController(requireActivity())
+                mediaController.setAnchorView(view)
+                binding.videoView.setMediaController(mediaController)
+                binding.videoView.start()
+
+                view.visibility = View.GONE
+            }
         }
 
         super.onActivityResult(requestCode, resultCode, data)
@@ -141,6 +156,8 @@ class UploadMediaFragment : BottomSheetDialogFragment() {
         )
 
         currentMediaPath = image.absolutePath
+        isVideoUri = false
+
         return image
     }
 
@@ -150,6 +167,6 @@ class UploadMediaFragment : BottomSheetDialogFragment() {
     }
 
     internal interface SetOption {
-        fun onSetAttachment(filepath: String)
+        fun onSetAttachment(filepath: String, isVideoUri: Boolean = false)
     }
 }

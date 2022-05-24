@@ -45,17 +45,28 @@ class UploadActivityActivity : AppCompatActivity(), View.OnClickListener, Upload
         }
     }
 
-    override fun onSetAttachment(filepath: String) {
+    override fun onSetAttachment(filepath: String, isVideoUri: Boolean) {
         binding.imageViewUpload.isEnabled = false
         binding.imageViewUpload.setImageResource(R.drawable.ic_upload)
         binding.progressLoader.visibility = View.VISIBLE
         binding.textViewUploadStatus.text = "Uploading now..."
-        uploadMedia(filepath)
+        uploadMedia(filepath, isVideoUri)
     }
 
-    private fun uploadMedia(filepath: String) {
-        var file = Uri.fromFile(File(filepath))
-        val mediaRef = storageReference!!.child("images/${auth.currentUser!!.uid}/${file.lastPathSegment}")
+    private fun uploadMedia(filepath: String, isVideoUri: Boolean) {
+        var file = if(isVideoUri) {
+            Uri.parse(filepath)
+        } else {
+            Uri.fromFile(File(filepath))
+        }
+
+        val name = if(isVideoUri) {
+            "${System.currentTimeMillis()}.mp4"
+        } else {
+            file.lastPathSegment
+        }
+
+        val mediaRef = storageReference!!.child("media/${auth.currentUser!!.uid}/${name}")
         val uploadTask = mediaRef.putFile(file)
 
         uploadTask.addOnFailureListener {

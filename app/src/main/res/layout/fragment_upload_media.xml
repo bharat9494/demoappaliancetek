@@ -19,19 +19,43 @@
         android:layout_height="400dp"
         android:contentDescription="attachment" />
 
-    <VideoView
-        android:id="@+id/videoView"
-        app:layout_constraintTop_toBottomOf="@id/imageViewAttachment"
-        app:layout_constraintEnd_toEndOf="parent"
+    <FrameLayout
+        android:id="@+id/framelayout"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imageViewAttachment"
         android:visibility="gone"
         android:layout_width="0dp"
-        android:layout_height="400dp"/>
+        android:layout_height="wrap_content">
+
+        <VideoView
+            android:id="@+id/videoView"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_height="400dp"/>
+
+        <ImageView
+            android:id="@+id/btnPlay"
+            android:src="@drawable/ic_baseline_play_arrow_24"
+            android:visibility="gone"
+            android:layout_gravity="center"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
+
+        <ImageView
+            android:id="@+id/btnPause"
+            android:src="@drawable/ic_baseline_pause_24"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:layout_width="60dp"
+            android:layout_height="60dp" />
+
+    </FrameLayout>
 
     <LinearLayout
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/videoView"
+        app:layout_constraintTop_toBottomOf="@id/framelayout"
         android:orientation="horizontal"
         android:layout_width="0dp"
         android:layout_height="wrap_content">

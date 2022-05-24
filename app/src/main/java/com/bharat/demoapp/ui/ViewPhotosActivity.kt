@@ -2,7 +2,6 @@ package com.bharat.demoapp.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Environment
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -13,7 +12,9 @@ import androidx.core.content.FileProvider
 import com.bharat.demoapp.R
 import com.bharat.demoapp.databinding.ActivityViewPhotosBinding
 import com.bharat.demoapp.misc.FirebaseMediaFile
-import com.bharat.demoapp.ui.adapters.ImageAdapter
+import com.bharat.demoapp.misc.getAllDownloadedFiles
+import com.bharat.demoapp.misc.isOnline
+import com.bharat.demoapp.ui.adapters.MediaAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -21,13 +22,13 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import java.io.File
 
-class ViewPhotosActivity : AppCompatActivity() {
+class ViewPhotosActivity : AppCompatActivity(){
     private lateinit var auth: FirebaseAuth
     private lateinit var binding: ActivityViewPhotosBinding
 
     var imagelist: ArrayList<FirebaseMediaFile>? = null
     var root: StorageReference? = null
-    var adapter: ImageAdapter? = null
+    var adapter: MediaAdapter? = null
     var storageRef: StorageReference? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,10 +36,10 @@ class ViewPhotosActivity : AppCompatActivity() {
         binding = ActivityViewPhotosBinding.inflate(layoutInflater)
         setContentView(binding.root)
         auth = Firebase.auth
-        storageRef = FirebaseStorage.getInstance().reference.child("images/${auth.currentUser!!.uid}")
+        storageRef = FirebaseStorage.getInstance().reference.child("media/${auth.currentUser!!.uid}")
 
         imagelist = ArrayList()
-        adapter = ImageAdapter(object : ImageAdapter.OnItemClickListener{
+        adapter = MediaAdapter(object : MediaAdapter.OnItemClickListener{
             override fun onDownload(firebaseMediaFile: FirebaseMediaFile) {
                 Toast.makeText(this@ViewPhotosActivity, "Downloading..", Toast.LENGTH_SHORT).show()
                 downloadAndShare(firebaseMediaFile)
@@ -54,27 +55,55 @@ class ViewPhotosActivity : AppCompatActivity() {
         }, this)
         binding.progress.visibility = View.VISIBLE
 
-        val listRef = storageRef!!
-        listRef.listAll()
-            .addOnSuccessListener { listResult ->
-                for (file in listResult.items) {
-                    file.downloadUrl.addOnSuccessListener { uri ->
-                        imagelist!!.add(FirebaseMediaFile(file.name, uri.toString()))
-                    }.addOnSuccessListener {
-                        binding.recyclerview.adapter = adapter
-                        adapter!!.setImageList(imagelist)
+        if(isOnline()) {
+            binding.textViewOffline.visibility = View.GONE
+            val listRef = storageRef!!
+            listRef.listAll()
+                .addOnFailureListener {
+                    Log.i("TAG", "onCreate: ${it.message}")
+                }
+                .addOnSuccessListener { listResult ->
+                    for (file in listResult.items) {
+                        file.downloadUrl.addOnSuccessListener { uri ->
+
+                            val type = if(file.name.endsWith(".mp4")) {
+                                "Video"
+                            } else {
+                                "Image"
+                            }
+
+                            imagelist!!.add(
+                                FirebaseMediaFile(file.name, uri.toString(), type)
+                            )
+                        }.addOnSuccessListener {
+                            binding.recyclerview.adapter = adapter
+                            adapter!!.setMediaList(imagelist)
+                        }
+                    }
+
+                    if(listResult.items.isEmpty()) {
+                        binding.noData.visibility = View.VISIBLE
+                    } else {
+                        binding.noData.visibility = View.GONE
                     }
                 }
-
-                if(listResult.items.isEmpty()) {
-                    binding.noData.visibility = View.VISIBLE
-                } else {
-                    binding.noData.visibility = View.GONE
+                .addOnCompleteListener {
+                    Log.i("TAG", "onCreate: ${it.exception}")
+                    binding.progress.visibility = View.GONE
                 }
+        } else {
+            binding.textViewOffline.visibility = View.VISIBLE
+            val listOfFiles = this.getAllDownloadedFiles()
+            binding.progress.visibility = View.GONE
+            adapter!!.setMediaList(listOfFiles)
+            binding.recyclerview.adapter = adapter
+
+            if(listOfFiles.isEmpty()) {
+                binding.noData.visibility = View.VISIBLE
+            } else {
+                binding.noData.visibility = View.GONE
             }
-            .addOnCompleteListener {
-                binding.progress.visibility = View.GONE
-            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -94,12 +123,7 @@ class ViewPhotosActivity : AppCompatActivity() {
 
     fun downloadAndShare(firebaseMediaFile: FirebaseMediaFile, share: Boolean = false, view: Boolean = false) {
         val imgRef = storageRef!!.child(firebaseMediaFile.name)
-
-        val localFile = File.createTempFile(
-            firebaseMediaFile.name,
-            ".jpg",
-            getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-        )
+        val localFile = File(getExternalFilesDir(null)!!.absolutePath, firebaseMediaFile.name)
 
         imgRef.getFile(localFile).addOnSuccessListener {
             Toast.makeText(this@ViewPhotosActivity, "success", Toast.LENGTH_SHORT).show()

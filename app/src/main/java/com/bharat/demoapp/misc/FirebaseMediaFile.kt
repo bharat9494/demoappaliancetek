@@ -2,5 +2,6 @@ package com.bharat.demoapp.misc
 
 data class FirebaseMediaFile(
     var name: String,
-    var url: String
+    var url: String,
+    var type: String
 )
